@@ -1,0 +1,8 @@
+transaction_id,date,description,amount,type,balance_after,recipient_account,sender_account
+TXN-004-001,2024-01-07,Salary Credit,60000.00,credit,60000.00,,10000000004
+TXN-004-002,2024-01-18,Grocery Shopping,6000.00,debit,54000.00,,10000000004
+TXN-004-003,2024-02-07,Salary Credit,60000.00,credit,114000.00,,10000000004
+TXN-004-004,2024-02-25,Medical Expense,15000.00,debit,99000.00,,10000000004
+TXN-004-005,2024-03-07,Salary Credit,60000.00,credit,159000.00,,10000000004
+TXN-004-006,2024-03-20,Utility Bills,4000.00,debit,155000.00,,10000000004
+TXN-004-007,2024-04-07,Salary Credit,60000.00,credit,215000.00,,10000000004

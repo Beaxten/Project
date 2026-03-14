@@ -1,0 +1,1 @@
+loan_id,user_id,amount,purpose,duration_months,has_collateral,asset_description,status,applied_at,approved_at,ml_score

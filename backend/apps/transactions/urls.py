@@ -1,5 +1,6 @@
 from django.urls import path
 
 urlpatterns = [
-    # Add transaction urls here
+    path('transfer/', TransferView.as_view()),
+    path('history/',  HistoryView.as_view()),
 ]

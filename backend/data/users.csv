@@ -1,0 +1,17 @@
+user_id,name,email,password_hash,cnic,account_number,account_type,balance,role,created_at,is_active
+1,Ali Hassan,ali.hassan@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3520212345671,10000000001,savings,150000.00,user,2023-06-10,True
+2,Sara Khan,sara.khan@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,4230156789012,10000000002,savings,280000.00,user,2023-07-15,True
+3,Ahmed Raza,ahmed.raza@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3320198765432,10000000003,current,1500000.00,user,2023-03-01,True
+4,Fatima Noor,fatima.noor@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3630145678901,10000000004,savings,75000.00,user,2023-09-20,True
+5,Usman Tariq,usman.tariq@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3520298761234,10000000005,savings,320000.00,user,2023-08-05,True
+6,Ayesha Malik,ayesha.malik@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,4210167894321,10000000006,current,890000.00,user,2023-05-18,True
+7,Bilal Ahmed,bilal.ahmed@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3740223456781,10000000007,savings,45000.00,user,2023-11-02,True
+8,Zainab Hussain,zainab.hussain@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3520312987651,10000000008,savings,125000.00,user,2023-10-30,True
+9,Hassan Iqbal,hassan.iqbal@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3630289043210,10000000009,current,2100000.00,user,2022-12-15,True
+10,Mariam Siddiqui,mariam.siddiqui@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,4220134567892,10000000010,savings,60000.00,user,2024-01-08,True
+11,Tariq Mehmood,tariq.mehmood@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3520456123781,10000000011,savings,430000.00,user,2022-10-10,True
+12,Sana Butt,sana.butt@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3840167234561,10000000012,savings,95000.00,user,2023-04-22,True
+13,Kamran Sheikh,kamran.sheikh@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3520378456231,10000000013,current,750000.00,user,2023-02-17,True
+14,Nadia Qureshi,nadia.qureshi@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,4130245678901,10000000014,savings,185000.00,user,2023-12-05,True
+15,Imran Javed,imran.javed@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3520289134562,10000000015,savings,520000.00,user,2022-08-30,True
+16,Admin User,admin@smartbank.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,1234512345671,00000000001,admin,0.00,admin,2022-01-01,True
