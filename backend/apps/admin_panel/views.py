@@ -107,3 +107,55 @@ class AdminAllTransactionsView(APIView):
         combined = combined.fillna('')
 
         return Response(combined.to_dict(orient='records'), status=status.HTTP_200_OK)
+
+# ══════════════════════════════════════════════════════════════════════
+#  GET /api/admin/fraud-alerts/
+# ══════════════════════════════════════════════════════════════════════
+
+FRAUD_CSV = os.path.join(DATA_DIR, 'fraud_flags.csv')
+
+class AdminFraudAlertsView(APIView):
+    authentication_classes = [CSVTokenAuthentication]
+
+    def get(self, request):
+
+        # ── 1. Admin check ─────────────────────────────────────────
+        if not is_admin(request):
+            return Response(
+                {'error': 'Access denied. Admins only.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ── 2. Read fraud_flags.csv ────────────────────────────────
+        try:
+            flags_df = pd.read_csv(FRAUD_CSV)
+        except Exception:
+            return Response([], status=status.HTTP_200_OK)
+
+        if flags_df.empty:
+            return Response([], status=status.HTTP_200_OK)
+
+        # ── 3. Filter only unresolved flags ────────────────────────
+        # resolved column stores True/False as string in CSV
+        # so we handle both cases
+        flags_df['resolved'] = flags_df['resolved'].astype(str).str.strip().str.lower()
+        unresolved = flags_df[flags_df['resolved'] == 'false']
+
+        if unresolved.empty:
+            return Response([], status=status.HTTP_200_OK)
+
+        # ── 4. Join with users.csv to get user name ────────────────
+        users_df = pd.read_csv(USERS_CSV)[['user_id', 'name', 'email']]
+        users_df['user_id'] = users_df['user_id'].astype(str)
+        unresolved = unresolved.copy()
+        unresolved['user_id'] = unresolved['user_id'].astype(str)
+
+        merged = unresolved.merge(users_df, on='user_id', how='left')
+
+        # ── 5. Fill any missing values (safe for JSON) ─────────────
+        merged = merged.fillna('')
+
+        # ── 6. Sort by flagged_at descending (newest first) ────────
+        merged = merged.sort_values('flagged_at', ascending=False)
+
+        return Response(merged.to_dict(orient='records'), status=status.HTTP_200_OK)

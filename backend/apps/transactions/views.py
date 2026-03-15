@@ -65,20 +65,24 @@ def append_statement(user_id, transaction_id, description,
 
 
 def run_fraud_check(user_id, transaction_id, amount):
-    """
-    Try to import Sharjeel's fraud detector.
-    If ml_model.py is not ready yet, skip silently so transfer still works.
-    """
     try:
-        from apps.loans.ml_model import detect_fraud, flag_transaction
+        from apps.loans.fraud_detector import detect_fraud, flag_transaction
+
         hour = datetime.datetime.now().hour
         is_fraud, reason = detect_fraud(user_id, float(amount), hour)
+
+        # ── Temporary: also flag if amount > 100,000 PKR for testing ──
+        if not is_fraud and float(amount) > 100000:
+            is_fraud = True
+            reason   = f'Large transfer PKR {float(amount):,.0f} flagged for review'
+
         if is_fraud:
             severity = 'high' if float(amount) > 300000 else 'medium'
             flag_transaction(user_id, transaction_id, reason, severity)
-    except Exception:
-        pass  # ML not ready yet — transfer still succeeds
+            print(f"FRAUD FLAGGED → {transaction_id} | {reason}")  # ← shows in terminal
 
+    except Exception as e:
+        print(f"Fraud check error: {e}")   # ← shows exact error in terminal
 
 # ══════════════════════════════════════════════════════════════════════
 #  POST /api/transactions/transfer/
