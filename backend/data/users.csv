@@ -13,6 +13,7 @@ user_id,name,email,password_hash,cnic,account_number,account_type,balance,role,c
 12,Sana Butt,sana.butt@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3840167234561,10000000012,savings,95000.0,user,2023-04-22,True
 13,Kamran Sheikh,kamran.sheikh@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3520378456231,10000000013,current,750000.0,user,2023-02-17,True
 14,Nadia Qureshi,nadia.qureshi@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,4130245678901,10000000014,savings,185000.0,user,2023-12-05,True
-15,Imran Javed,imran.javed@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3520289134562,10000000015,savings,520000.0,user,2022-08-30,True
+15,Imran Javed,imran.javed@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3520289134562,10000000015,savings,770000.0,user,2022-08-30,True
 16,Admin User,admin@smartbank.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,1234512345671,1,admin,0.0,admin,2022-01-01,True
 17,Test User,testuser@gmail.com,8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92,3520212345699,58228796941,savings,600000.0,user,2026-03-15,True
+18,hamza,hamza@gmail.com,da9c57e1ec882150d22dbab3e7c561a96ba49fb4697bb332edb9c09052282c22,1234567890123,88401809690,admin,1504000.0,admin,2026-04-04,True

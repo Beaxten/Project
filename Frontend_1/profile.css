@@ -1,0 +1,137 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.nav {
+  position: absolute;
+  top: 30px;
+  left: 300px;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 50px;
+  list-style: none;
+
+}
+
+.li a {
+  font-size: 24px;
+  font-weight: bolder;
+  color: white;
+  text-decoration: none;
+}
+
+.li a:hover {
+  color: yellow;
+}
+
+/* Container */
+.container {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Card */
+.profile-card {
+   
+  width: 420px;
+  margin-top: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 30px 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  margin-left: 0px;
+}
+
+/* Header */
+.profile-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Logo */
+.logo {
+  height: 80px;
+  width: 80px;
+  background: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  margin: 0 auto 10px;
+}
+
+/* Name */
+.profile-header h2 {
+  color: white;
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 5px 12px;
+  background: #1e40af;
+  color: white;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+/* Form */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Input Group */
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labels */
+.input-group label {
+  color: #cbd5f5;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+/* Inputs */
+.input-group input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  outline: none;
+}
+
+/* Focus */
+.input-group input:focus {
+  border: 1px solid #3b82f6;
+}

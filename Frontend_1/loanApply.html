@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBank - Loan Apply</title>
+    <link rel="stylesheet" href="loanApply.css">
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <ul class="ul-sidebar">
+            <li class="li"><a href="Dashboard.html">Dashboard</a></li>
+            <li class="li"><a href="Transfer.html">Transfer</a></li>
+            <li class="li"><a href="statement.html">Statement</a></li>
+            <li class="li"><a href="loanApply.html" class="active">Loan</a></li>
+            <li class="li"><a href="profile.html">Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+
+        <header class="top-nav">
+            <div class="logo">SmartBank</div>
+            <div class="user-info">
+                <span>Hello, <span class="display-user-name"></span></span>
+                <a href="#" class="logout-btn">Logout</a>
+            </div>
+        </header>
+
+        <main class="content">
+            <div class="loan-grid">
+
+                <!-- Active loan panel (hidden until data loads) -->
+                <div class="loan-section" id="active-loan" style="display:none">
+                    <h3>Your Active Loan</h3>
+                    <div class="summary-row">
+                        <span>Amount</span>
+                        <span class="val" id="loan-amount">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Purpose</span>
+                        <span class="val" id="loan-purpose">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Duration</span>
+                        <span class="val" id="loan-duration">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Applied</span>
+                        <span class="val" id="loan-applied">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Status</span>
+                        <span class="val" id="loan-status-badge">—</span>
+                    </div>
+                </div>
+
+                <!-- Apply form (hidden until data loads) -->
+                <div class="loan-section" id="apply-form" style="display:none">
+                    <h3>Application Form</h3>
+
+                    <div class="input-group">
+                        <label>Loan Amount (PKR)</label>
+                        <input type="number" id="loan-input-amount" placeholder="e.g. 500000">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Purpose</label>
+                        <select id="loan-input-purpose">
+                            <option value="home">Home</option>
+                            <option value="education">Education</option>
+                            <option value="business">Business</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Duration</label>
+                        <select id="loan-input-duration">
+                            <option value="24">24 months</option>
+                            <option value="12">12 months</option>
+                            <option value="36">36 months</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group radio-group">
+                        <label>Do you have collateral?</label>
+                        <div class="radio-options">
+                            <input type="radio" name="collateral" id="collateral-yes" value="yes" checked>
+                            <label for="collateral-yes">Yes</label>
+                            <input type="radio" name="collateral" id="collateral-no" value="no">
+                            <label for="collateral-no">No</label>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Asset Description</label>
+                        <input type="text" id="loan-input-asset" placeholder="e.g. House in Lahore">
+                    </div>
+
+                    <button class="primary-btn" id="apply-btn">Apply for Loan</button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const activeLoanSec = document.getElementById("active-loan");
+        const applyFormSec  = document.getElementById("apply-form");
+
+        try {
+            const res = await apiGetLoanStatus();
+
+            if (res.loan) {
+                // Show active loan panel
+                const loan = res.loan;
+                document.getElementById("loan-amount").textContent   = "PKR " + Number(loan.amount).toLocaleString();
+                document.getElementById("loan-purpose").textContent  = loan.purpose
+                    ? loan.purpose.charAt(0).toUpperCase() + loan.purpose.slice(1) : '—';
+                document.getElementById("loan-duration").textContent = loan.duration_months + " months";
+                document.getElementById("loan-applied").textContent  = loan.applied_at
+                    ? loan.applied_at.split(' ')[0] : '—';
+
+                // Status badge with colour
+                const badge = document.getElementById("loan-status-badge");
+                badge.textContent = loan.status.toUpperCase();
+                badge.style.cssText = `
+                    display:inline-block; padding:4px 10px; border-radius:4px;
+                    font-size:12px; font-weight:bold;
+                    background-color:${loan.status === 'approved' ? '#dcfce7' : loan.status === 'rejected' ? '#fee2e2' : '#fef9c3'};
+                    color:${loan.status === 'approved' ? '#166534' : loan.status === 'rejected' ? '#991b1b' : '#854d0e'};
+                `;
+
+                activeLoanSec.style.display = "block";
+
+            } else {
+                // No active loan — show application form
+                applyFormSec.style.display = "block";
+            }
+
+        } catch (e) {
+            console.error("Failed to load loan status", e);
+            // Default to showing the form on error
+            applyFormSec.style.display = "block";
+        }
+
+        // Apply button
+        document.getElementById("apply-btn").addEventListener("click", async () => {
+            const amount      = Number(document.getElementById("loan-input-amount").value);
+            const purpose     = document.getElementById("loan-input-purpose").value;
+            const duration    = Number(document.getElementById("loan-input-duration").value);
+            const hasCollateral = document.getElementById("collateral-yes").checked;
+            const assetDesc   = document.getElementById("loan-input-asset").value.trim();
+
+            if (!amount || amount <= 0) return alert("Please enter a valid loan amount.");
+            if (hasCollateral && !assetDesc) return alert("Please describe your collateral asset.");
+
+            const btn = document.getElementById("apply-btn");
+            btn.disabled    = true;
+            btn.textContent = "Applying...";
+
+            try {
+                const data = await apiApplyLoan({
+                    amount,
+                    purpose,
+                    duration_months: duration,
+                    has_collateral:  hasCollateral,
+                    asset_description: assetDesc
+                });
+
+                if (data.message) {
+                    alert(data.message);
+                    window.location.reload();
+                } else {
+                    alert(data.error || "Failed to apply. Please try again.");
+                }
+            } catch (e) {
+                alert("Server error. Please try again.");
+            } finally {
+                btn.disabled    = false;
+                btn.textContent = "Apply for Loan";
+            }
+        });
+    });
+</script>
+
+</html>

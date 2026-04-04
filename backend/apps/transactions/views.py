@@ -10,19 +10,13 @@ from rest_framework import status
 from smartbank.authentication import CSVTokenAuthentication
 from .dsa_structures import TransactionStack, TransactionQueue, TransactionLinkedList
 
-# ── paths ──────────────────────────────────────────────────────────────
 DATA_DIR   = os.path.join(os.path.dirname(__file__), '../../data')
 USERS_CSV  = os.path.join(DATA_DIR, 'users.csv')
 STMTS_DIR  = os.path.join(DATA_DIR, 'statements')
 
-# ── module-level DSA objects (live for the lifetime of the server) ─────
 transfer_stack = TransactionStack()   # tracks last processed transfer
 transfer_queue = TransactionQueue()   # queues incoming transfers
 
-
-# ══════════════════════════════════════════════════════════════════════
-#  HELPER FUNCTIONS
-# ══════════════════════════════════════════════════════════════════════
 
 def get_user_by_account(account_number):
     """Return user dict from users.csv by account number, or None."""
@@ -71,7 +65,6 @@ def run_fraud_check(user_id, transaction_id, amount):
         hour = datetime.datetime.now().hour
         is_fraud, reason = detect_fraud(user_id, float(amount), hour)
 
-        # ── Temporary: also flag if amount > 100,000 PKR for testing ──
         if not is_fraud and float(amount) > 100000:
             is_fraud = True
             reason   = f'Large transfer PKR {float(amount):,.0f} flagged for review'
@@ -79,22 +72,18 @@ def run_fraud_check(user_id, transaction_id, amount):
         if is_fraud:
             severity = 'high' if float(amount) > 300000 else 'medium'
             flag_transaction(user_id, transaction_id, reason, severity)
-            print(f"FRAUD FLAGGED → {transaction_id} | {reason}")  # ← shows in terminal
+            print(f"FRAUD FLAGGED → {transaction_id} | {reason}")  
 
     except Exception as e:
-        print(f"Fraud check error: {e}")   # ← shows exact error in terminal
+        print(f"Fraud check error: {e}")   
 
-# ══════════════════════════════════════════════════════════════════════
-#  POST /api/transactions/transfer/
-# ══════════════════════════════════════════════════════════════════════
 
 class TransferView(APIView):
     authentication_classes = [CSVTokenAuthentication]
 
     def post(self, request):
-        sender = request.user  # dict from CSVTokenAuthentication
+        sender = request.user  
 
-        # ── 1. Read input ──────────────────────────────────────────
         recipient_account = str(request.data.get('recipient_account', '')).strip()
         description       = request.data.get('description', 'Transfer').strip() or 'Transfer'
 
@@ -106,7 +95,6 @@ class TransferView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # ── 2. Validate ────────────────────────────────────────────
         if amount <= 0:
             return Response(
                 {'error': 'Amount must be greater than 0.'},
@@ -132,7 +120,6 @@ class TransferView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        # ── 3. Check balance ───────────────────────────────────────
         sender_balance = float(sender['balance'])
         if sender_balance < amount:
             return Response(
@@ -140,7 +127,6 @@ class TransferView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # ── 4. Enqueue the transfer ────────────────────────────────
         transfer_data = {
             'sender_id':          sender['user_id'],
             'sender_account':     sender['account_number'],
@@ -151,7 +137,6 @@ class TransferView(APIView):
         }
         transfer_queue.enqueue(transfer_data)
 
-        # ── 5. Dequeue and process ─────────────────────────────────
         job = transfer_queue.dequeue()
 
         sender_new_balance    = sender_balance - job['amount']
@@ -160,10 +145,8 @@ class TransferView(APIView):
         update_balance(job['sender_id'],    sender_new_balance)
         update_balance(job['recipient_id'], recipient_new_balance)
 
-        # ── 6. Generate transaction ID ─────────────────────────────
         txn_id = 'TXN-' + str(uuid.uuid4()).upper()[:8]
 
-        # ── 7. Write debit to sender's statement ───────────────────
         append_statement(
             user_id            = job['sender_id'],
             transaction_id     = txn_id,
@@ -175,7 +158,6 @@ class TransferView(APIView):
             sender_account     = job['sender_account'],
         )
 
-        # ── 8. Write credit to recipient's statement ───────────────
         append_statement(
             user_id            = job['recipient_id'],
             transaction_id     = txn_id,
@@ -187,7 +169,6 @@ class TransferView(APIView):
             sender_account     = job['sender_account'],
         )
 
-        # ── 9. Push to stack ───────────────────────────────────────
         transfer_stack.push({
             'transaction_id': txn_id,
             'amount':         job['amount'],
@@ -195,10 +176,8 @@ class TransferView(APIView):
             'time':           datetime.datetime.now().isoformat(),
         })
 
-        # ── 10. Fraud check ────────────────────────────────────────
         run_fraud_check(job['sender_id'], txn_id, job['amount'])
 
-        # ── 11. Return success ─────────────────────────────────────
         return Response({
             'message':        'Transfer successful.',
             'transaction_id': txn_id,
@@ -207,11 +186,6 @@ class TransferView(APIView):
             'new_balance':    sender_new_balance,
         }, status=status.HTTP_200_OK)
 
-
-# ══════════════════════════════════════════════════════════════════════
-#  GET /api/transactions/history/
-# ══════════════════════════════════════════════════════════════════════
-
 class HistoryView(APIView):
     authentication_classes = [CSVTokenAuthentication]
 
@@ -219,7 +193,6 @@ class HistoryView(APIView):
         user_id   = request.user['user_id']
         stmt_path = os.path.join(STMTS_DIR, f'user_{user_id}.csv')
 
-        # If file doesn't exist yet return empty list
         if not os.path.exists(stmt_path):
             return Response([], status=status.HTTP_200_OK)
 
@@ -228,9 +201,7 @@ class HistoryView(APIView):
         if df.empty:
             return Response([], status=status.HTTP_200_OK)
 
-        # ── Load into Linked List (DSA) ────────────────────────────
         history = TransactionLinkedList()
-        # Sort newest first before loading
         df = df.sort_values('date', ascending=False)
 
         for _, row in df.iterrows():

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBank - Transfer Money</title>
+    <link rel="stylesheet" href="Transfer.css">
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <ul class="ul-sidebar">
+            <li class="li"><a href="Dashboard.html">Dashboard</a></li>
+            <li class="li"><a href="Transfer.html" class="active">Transfer</a></li>
+            <li class="li"><a href="statement.html">Statement</a></li>
+            <li class="li"><a href="loanApply.html">Loan</a></li>
+            <li class="li"><a href="profile.html">Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+
+        <header class="top-nav">
+            <div class="logo">SmartBank</div>
+            <div class="user-info">
+                <span>Hello, <span class="display-user-name"></span></span>
+                <a href="#" class="logout-btn">Logout</a>
+            </div>
+        </header>
+
+        <main class="content">
+
+            <!-- Step 1: Transfer form -->
+            <div class="transfer-box" id="transfer-form">
+                <h2>Transfer Money</h2>
+
+                <div class="input-group">
+                    <label>Recipient Account Number</label>
+                    <input type="text" id="recipient-account" placeholder="11-digit number">
+                </div>
+
+                <div class="input-group">
+                    <label>Amount (PKR)</label>
+                    <input type="number" id="transfer-amount" placeholder="e.g. 5000">
+                    <small class="available-text">Available: PKR —</small>
+                </div>
+
+                <div class="input-group">
+                    <label>Description (optional)</label>
+                    <input type="text" id="transfer-desc" placeholder="e.g. Rent payment">
+                </div>
+
+                <button class="primary-btn" id="review-btn">Review Transfer</button>
+            </div>
+
+            <hr class="divider" id="divider" style="display:none">
+
+            <!-- Step 2: Confirm box -->
+            <div class="transfer-box" id="confirm-box" style="display:none">
+                <h2>Confirm Transfer</h2>
+
+                <div class="summary-row">
+                    <span>To Account</span>
+                    <span class="val" id="confirm-account">—</span>
+                </div>
+                <div class="summary-row">
+                    <span>Amount</span>
+                    <span class="val blue-text" id="confirm-amount">—</span>
+                </div>
+                <div class="summary-row">
+                    <span>Description</span>
+                    <span class="val" id="confirm-desc">—</span>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="cancel-btn" id="cancel-btn">Cancel</button>
+                    <button class="primary-btn" id="confirm-btn">Confirm</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>
+    let currentBalance = 0;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        // Load current balance for validation
+        try {
+            const b = await apiGetBalance();
+            if (b.balance !== undefined) {
+                currentBalance = Number(b.balance);
+                document.querySelector(".available-text").textContent =
+                    "Available: PKR " + currentBalance.toLocaleString();
+            }
+        } catch (e) {
+            console.error("Failed to load balance", e);
+        }
+
+        // Review button — validate then show confirm box
+        document.getElementById("review-btn").addEventListener("click", () => {
+            const account = document.getElementById("recipient-account").value.trim();
+            const amount  = Number(document.getElementById("transfer-amount").value);
+            const desc    = document.getElementById("transfer-desc").value.trim();
+
+            if (!/^\d{11}$/.test(account)) {
+                return alert("Recipient account must be exactly 11 digits.");
+            }
+            if (!amount || amount <= 0) {
+                return alert("Please enter a valid amount.");
+            }
+            if (amount > currentBalance) {
+                return alert("Insufficient balance.");
+            }
+
+            // Populate confirm box
+            document.getElementById("confirm-account").textContent = account;
+            document.getElementById("confirm-amount").textContent  = "PKR " + amount.toLocaleString();
+            document.getElementById("confirm-desc").textContent    = desc || "N/A";
+
+            document.getElementById("transfer-form").style.display = "none";
+            document.getElementById("divider").style.display       = "block";
+            document.getElementById("confirm-box").style.display   = "block";
+        });
+
+        // Cancel — go back to form
+        document.getElementById("cancel-btn").addEventListener("click", () => {
+            document.getElementById("confirm-box").style.display   = "none";
+            document.getElementById("divider").style.display       = "none";
+            document.getElementById("transfer-form").style.display = "block";
+        });
+
+        // Confirm — call API
+        document.getElementById("confirm-btn").addEventListener("click", async () => {
+            const account = document.getElementById("recipient-account").value.trim();
+            const amount  = document.getElementById("transfer-amount").value;
+            const desc    = document.getElementById("transfer-desc").value.trim();
+
+            const btn = document.getElementById("confirm-btn");
+            btn.disabled    = true;
+            btn.textContent = "Processing...";
+
+            try {
+                const res = await apiTransfer(account, amount, desc);
+                if (res.message) {
+                    alert(res.message);
+                    window.location.href = "Dashboard.html";
+                } else {
+                    alert(res.error || "Transfer failed.");
+                    document.getElementById("cancel-btn").click();
+                }
+            } catch (e) {
+                alert("Server error. Please try again.");
+                document.getElementById("cancel-btn").click();
+            } finally {
+                btn.disabled    = false;
+                btn.textContent = "Confirm";
+            }
+        });
+    });
+</script>
+
+</html>

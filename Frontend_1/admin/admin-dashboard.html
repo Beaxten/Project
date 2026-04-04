@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+    <div id="admin-wrapper" style="display:none;">
+        <h3 class="page-title">Overview</h3>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-num" id="stat-users">0</div>
+                <div class="stat-lbl">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="stat-loans" style="color:#854d0e;">0</div>
+                <div class="stat-lbl">Pending Loans</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="stat-fraud" style="color:#991b1b;">0</div>
+                <div class="stat-lbl">Fraud Alerts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="stat-txns">0</div>
+                <div class="stat-lbl">Transactions</div>
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:10px;">
+            <a href="manage-users.html"
+                style="text-decoration:none;background:#ede9fe;border-radius:8px;padding:20px;font-size:14px;color:#5b21b6;font-weight:600;display:block;">Manage
+                Users →</a>
+            <a href="loan-approvals.html"
+                style="text-decoration:none;background:#dcfce7;border-radius:8px;padding:20px;font-size:14px;color:#166534;font-weight:600;display:block;">Loan
+                Approvals →</a>
+            <a href="fraud-alerts.html"
+                style="text-decoration:none;background:#fee2e2;border-radius:8px;padding:20px;font-size:14px;color:#991b1b;font-weight:600;display:block;">Fraud
+                Alerts →</a>
+            <a href="all-transactions.html"
+                style="text-decoration:none;background:#dbeafe;border-radius:8px;padding:20px;font-size:14px;color:#1e40af;font-weight:600;display:block;">All
+                Transactions →</a>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../components/AdminLayout.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            buildAdminLayout("dashboard");
+
+            try {
+                // Fetch stats concurrently
+                const [users, alerts, txns] = await Promise.all([
+                    apiAdminGetUsers(),
+                    apiAdminGetFraudAlerts(),
+                    apiAdminGetTransactions()
+                ]);
+
+                // Set users
+                if (Array.isArray(users)) {
+                    document.getElementById("stat-users").textContent = users.length;
+
+                    // Count pending loans among users
+                    const pendingLoans = users.filter(u => u.loan && u.loan.status === 'pending').length;
+                    document.getElementById("stat-loans").textContent = pendingLoans;
+                }
+
+                if (Array.isArray(alerts)) {
+                    document.getElementById("stat-fraud").textContent = alerts.length;
+                }
+
+                if (Array.isArray(txns)) {
+                    document.getElementById("stat-txns").textContent = txns.length;
+                }
+
+            } catch (e) {
+                console.error("Dashboard metric failed to load", e);
+            }
+        });
+    </script>
+</body>
+
+</html>

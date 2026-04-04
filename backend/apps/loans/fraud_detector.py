@@ -37,8 +37,6 @@ def detect_fraud(user_id, amount, hour_of_day):
     amount_vs_avg = (amount / user_avg) if user_avg > 0 else 1.0
     is_large      = 1 if amount > 100000 else 0
 
-    # ── FIX: use DataFrame with column names instead of plain list ─
-    # This matches exactly how scaler was fitted during training
     features = pd.DataFrame([{
         'Amount':           amount,
         'hour':             hour_of_day,

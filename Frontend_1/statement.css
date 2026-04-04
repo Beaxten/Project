@@ -1,0 +1,190 @@
+/* * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+
+.nav {
+  position: absolute;
+  top: 30px;
+  left: 300px;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 50px;
+  list-style: none;
+
+}
+
+.li a {
+  font-size: 24px;
+  font-weight: bolder;
+  color: white;
+  text-decoration: none;
+}
+
+.li a:hover {
+  color: yellow;
+} */
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    display: flex;
+    height: 100vh;
+    color: white;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 200px;
+    padding-top: 100px;
+    padding-left: 20px;
+}
+
+.ul-sidebar {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.li a {
+    font-size: 20px;
+    font-weight: bolder;
+    color: white;
+    text-decoration: none;
+}
+
+.li a:hover, .li a.active {
+    color: #ffd700;
+}
+
+/* Main Layout */
+.main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-right: 40px;
+}
+
+.top-nav {
+    background-color: #2557d6;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 30px;
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+.logout-btn {
+    text-decoration: none;
+    color: white;
+    border: 1px solid white;
+    padding: 4px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Content Area */
+.content {
+    margin-top: 30px;
+}
+
+.statement-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.statement-header h2 {
+    font-weight: normal;
+    font-size: 22px;
+}
+
+/* Chips Styling */
+.filter-chips {
+    display: flex;
+    gap: 15px;
+}
+
+.chip {
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.chip.active {
+    background-color: #2557d6;
+}
+
+.chip:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Table Styling */
+.statement-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.statement-table th {
+    text-align: left;
+    color: #ccc;
+    padding-bottom: 15px;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.statement-table td {
+    padding: 15px 0;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.balance-cell {
+    font-weight: bold;
+}
+
+/* Badges */
+.badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.debit { background-color: #ff4d4d22; color: #ff4d4d; border: 1px solid #ff4d4d; }
+.credit { background-color: #2ecc7122; color: #2ecc71; border: 1px solid #2ecc71; }

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Approvals</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+    <div id="admin-wrapper" style="display:none;">
+        <h3 class="page-title">Loan Approvals</h3>
+        <div
+            style="background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;">
+            <table class="mini-table" id="loans-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Purpose</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../components/AdminLayout.js"></script>
+    <script>
+        async function handleAction(loanId, action) {
+            try {
+                const data = await apiAdminLoanAction(loanId, action);
+                if (data.message) {
+                    const statusSpan = document.getElementById('status-' + loanId);
+                    statusSpan.textContent = action.toUpperCase();
+                    statusSpan.className = action === 'approved' ? 'badge-g' : 'badge-r';
+
+                    const actionTd = document.getElementById('action-' + loanId);
+                    actionTd.innerHTML = `<span style="color:var(--color-text-secondary);font-size:11px;">Done</span>`;
+                } else {
+                    alert(data.error || "Action failed.");
+                }
+            } catch (e) {
+                alert("Server error.");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            buildAdminLayout("loans");
+
+            try {
+                const users = await apiAdminGetUsers();
+                const tbody = document.querySelector("#loans-table tbody");
+
+                if (users && Array.isArray(users)) {
+                    const withLoans = users.filter(u => u.loan);
+
+                    if (withLoans.length === 0) {
+                        tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'>No pending loans.</td></tr>";
+                    }
+
+                    withLoans.forEach(u => {
+                        const l = u.loan;
+                        const badgeC = l.status === 'approved' ? 'badge-g' : l.status === 'rejected' ? 'badge-r' : 'badge-y';
+                        const isPending = l.status === 'pending';
+
+                        const actionHtml = isPending ?
+                            `<button class="btn-approve" onclick="handleAction(${l.loan_id}, 'approved')">Approve</button>
+                             <button class="btn-reject" onclick="handleAction(${l.loan_id}, 'rejected')">Reject</button>`
+                            : `<span style="color:var(--color-text-secondary);font-size:11px;">Done</span>`;
+
+                        const row = `<tr>
+                           <td>${u.name}<br><span style="font-size:11px;color:var(--color-text-secondary);">${u.email}</span></td>
+                           <td>PKR ${Number(l.amount).toLocaleString()}</td>
+                           <td style="text-transform:capitalize;">${l.purpose}</td>
+                           <td>${l.duration_months} mo</td>
+                           <td><span id="status-${l.loan_id}" class="${badgeC}">${l.status.toUpperCase()}</span></td>
+                           <td id="action-${l.loan_id}">${actionHtml}</td>
+                        </tr>`;
+                        tbody.innerHTML += row;
+                    });
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        });
+    </script>
+</body>
+
+</html>

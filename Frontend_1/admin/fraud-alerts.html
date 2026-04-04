@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Alerts</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+    <div id="admin-wrapper" style="display:none;">
+        <h3 class="page-title">Fraud Alerts</h3>
+        <div
+            style="background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;">
+            <table class="mini-table" id="fraud-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Transaction</th>
+                        <th>Reason</th>
+                        <th>Flagged At</th>
+                        <th>Severity</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../components/AdminLayout.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            buildAdminLayout("fraud");
+
+            try {
+                const alerts = await apiAdminGetFraudAlerts();
+                const tbody = document.querySelector("#fraud-table tbody");
+
+                if (alerts && Array.isArray(alerts)) {
+                    if (alerts.length === 0) {
+                        tbody.innerHTML = "<tr><td colspan='5' style='text-align:center;'>No fraud alerts found.</td></tr>";
+                    }
+
+                    alerts.forEach(a => {
+                        const sevClass = a.severity === "high" ? "sev-high" : a.severity === "medium" ? "sev-medium" : "sev-low";
+
+                        const row = `<tr>
+                           <td>${a.name}<br><span style="font-size:11px;color:var(--color-text-secondary);">${a.email}</span></td>
+                           <td style="font-family:monospace;font-size:11px;">${a.transaction_id}</td>
+                           <td style="max-width:200px;font-size:11px;">${a.reason}</td>
+                           <td style="font-size:11px;">${a.flagged_at}</td>
+                           <td><span class="${sevClass}">${a.severity.toUpperCase()}</span></td>
+                        </tr>`;
+                        tbody.innerHTML += row;
+                    });
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        });
+    </script>
+</body>
+
+</html>

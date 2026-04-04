@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBank - Statement</title>
+    <link rel="stylesheet" href="statement.css">
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <ul class="ul-sidebar">
+            <li class="li"><a href="Dashboard.html">Dashboard</a></li>
+            <li class="li"><a href="Transfer.html">Transfer</a></li>
+            <li class="li"><a href="statement.html" class="active">Statement</a></li>
+            <li class="li"><a href="loanApply.html">Loan</a></li>
+            <li class="li"><a href="profile.html">Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+
+        <header class="top-nav">
+            <div class="logo">SmartBank</div>
+            <div class="user-info">
+                <span>Hello, <span class="display-user-name"></span></span>
+                <a href="#" class="logout-btn">Logout</a>
+            </div>
+        </header>
+
+        <main class="content">
+            <div class="statement-header">
+                <h2>Bank Statement</h2>
+                <div class="filter-chips">
+                    <button class="chip active">All</button>
+                    <button class="chip">Credit</button>
+                    <button class="chip">Debit</button>
+                </div>
+            </div>
+
+            <table class="statement-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Bal. After</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="5" style="text-align:center">Loading...</td></tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+</body>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>
+    let allTransactions = [];
+
+    function renderTable(txns) {
+        const tbody = document.querySelector(".statement-table tbody");
+        tbody.innerHTML = "";
+
+        if (!txns || txns.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No transactions found</td></tr>";
+            return;
+        }
+
+        txns.forEach(txn => {
+            const isCredit   = txn.type === 'credit';
+            const amountSign = isCredit ? '+' : '-';
+            const color      = isCredit ? '#16a34a' : '#dc2626';
+            const tr         = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${txn.date}</td>
+                <td>${txn.description}</td>
+                <td><span class="badge ${txn.type}">${txn.type.toUpperCase()}</span></td>
+                <td style="color:${color};font-weight:500">${amountSign}${Number(txn.amount).toLocaleString()}</td>
+                <td class="balance-cell">${Number(txn.balance_after).toLocaleString()}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            allTransactions = await apiGetHistory();
+            renderTable(allTransactions);
+        } catch (e) {
+            console.error("Failed to load history", e);
+            document.querySelector(".statement-table tbody").innerHTML =
+                "<tr><td colspan='5' style='text-align:center'>Failed to load transactions</td></tr>";
+        }
+
+        document.querySelectorAll(".chip").forEach(chip => {
+            chip.addEventListener("click", () => {
+                document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+                chip.classList.add("active");
+                const filter = chip.textContent.toLowerCase();
+                if (filter === "all") {
+                    renderTable(allTransactions);
+                } else {
+                    renderTable(allTransactions.filter(t => t.type === filter));
+                }
+            });
+        });
+    });
+</script>
+
+</html>

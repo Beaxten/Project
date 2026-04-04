@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Transactions</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+    <div id="admin-wrapper" style="display:none;">
+        <h3 class="page-title">All Transactions</h3>
+        <div
+            style="background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;">
+            <table class="mini-table" id="txns-table">
+                <thead>
+                    <tr>
+                        <th>TXN ID</th>
+                        <th>User</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../components/AdminLayout.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            buildAdminLayout("transactions");
+
+            try {
+                const txns = await apiAdminGetTransactions();
+                const tbody = document.querySelector("#txns-table tbody");
+
+                if (txns && Array.isArray(txns)) {
+                    if (txns.length === 0) {
+                        tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'>No transactions found.</td></tr>";
+                    }
+
+                    txns.forEach(t => {
+                        const typeClass = t.type === 'credit' ? 'badge-g' : 'badge-r';
+                        const amountSign = t.type === 'credit' ? '+' : '−';
+                        const amountColor = t.type === 'credit' ? 'cr' : 'dr';
+
+                        const row = `<tr>
+                           <td style="font-family:monospace;font-size:11px;">${t.transaction_id}</td>
+                           <td>${t.name}</td>
+                           <td>${t.description}</td>
+                           <td class="${amountColor}">${amountSign}${Number(t.amount).toLocaleString()}</td>
+                           <td><span class="${typeClass}">${t.type.toUpperCase()}</span></td>
+                           <td style="font-size:12px;">${t.date}</td>
+                        </tr>`;
+                        tbody.innerHTML += row;
+                    });
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        });
+    </script>
+</body>
+
+</html>

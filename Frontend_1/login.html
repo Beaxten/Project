@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Bank Login</title>
+  <link rel="stylesheet" href="login_style.css" />
+</head>
+
+<body>
+
+  <div class="container">
+    <form class="form" id="loginForm">
+      <h1>Smart Bank</h1>
+      <p class="subtitle">Welcome back! Please login</p>
+
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required />
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required />
+      </div>
+
+      <button type="submit">Login</button>
+
+      <!-- 🔹 Register Link -->
+      <p class="switch">
+        Don't have an account?
+        <a href="register.html">Register here</a>
+      </p>
+
+      <p id="errorMsg" style="color: red"></p>
+    </form>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+
+  <script>
+    const form = document.getElementById("loginForm");
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const data = await apiLogin(email, password);
+
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+
+          if (data.user.role === "admin") {
+            window.location.href = "admin/admin-dashboard.html";
+          } else {
+            window.location.href = "Dashboard.html";
+          }
+        } else {
+          document.getElementById("errorMsg").innerText = data.error || "Login Failed";
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("errorMsg").innerText = "Something went wrong!";
+      }
+    });
+  </script>
+
+</body>
+</html>

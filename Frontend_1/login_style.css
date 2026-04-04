@@ -1,0 +1,118 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
+
+/* Form Card */
+.form {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 40px 30px;
+  border-radius: 15px;
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+/* Heading */
+.form h1 {
+  color: #fff;
+}
+
+/* Subtitle */
+.subtitle {
+  font-size: 14px;
+  color: #cbd5f5;
+  margin-bottom: 10px;
+}
+
+/* Inputs */
+.form input {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+/* Input focus */
+.form input:focus {
+  border: 2px solid #3b82f6;
+}
+
+/* Button */
+.form button {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #3b82f6;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.form button:hover {
+  background: #2563eb;
+}
+
+/* Register text */
+.register {
+  font-size: 13px;
+  color: #ddd;
+}
+
+.register span {
+  color: #3b82f6;
+  cursor: pointer;
+}
+
+.input-group input:focus {
+  border: 2px solid #3b82f6;
+} /* Input Group */
+
+.input-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+/* Labels */
+.input-group label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #e2e8f0;
+}
+
+/* Inputs */
+.input-group input {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}

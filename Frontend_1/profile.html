@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBank - Profile</title>
+    <link rel="stylesheet" href="Dashboard.css">
+    <style>
+        /* ── Profile-specific styles ── */
+        .profile-wrapper {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 32px 16px;
+        }
+
+        .profile-hero {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #1d4ed8;
+            color: #fff;
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            letter-spacing: 1px;
+        }
+
+        .profile-hero-info h2 {
+            margin: 0 0 6px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .profile-type-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .profile-fields {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .profile-field-row {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .profile-field-row:last-child {
+            border-bottom: none;
+        }
+
+        .profile-field-label {
+            width: 140px;
+            flex-shrink: 0;
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .profile-field-value {
+            font-size: 14px;
+            color: #111827;
+            font-weight: 400;
+        }
+
+        .profile-field-value.balance-val {
+            color: #16a34a;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .profile-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0 0 10px 0;
+            margin: 0 0 0 0;
+        }
+
+        .profile-section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <ul class="ul-sidebar">
+            <li class="li"><a href="Dashboard.html">Dashboard</a></li>
+            <li class="li"><a href="Transfer.html">Transfer</a></li>
+            <li class="li"><a href="statement.html">Statement</a></li>
+            <li class="li"><a href="loanApply.html">Loan</a></li>
+            <li class="li"><a href="profile.html" class="active">Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+
+        <header class="top-nav">
+            <div class="logo">SmartBank</div>
+            <div class="user-info">
+                <span>Hello, <span class="display-user-name"></span></span>
+                <a href="#" class="logout-btn">Logout</a>
+            </div>
+        </header>
+
+        <main class="content">
+            <div class="profile-wrapper">
+
+                <!-- Hero card: avatar + name + account type -->
+                <div class="profile-hero">
+                    <div class="profile-avatar" id="avatar">--</div>
+                    <div class="profile-hero-info">
+                        <h2 id="profile-name">Loading...</h2>
+                        <span class="profile-type-badge" id="account-type-badge">Account</span>
+                    </div>
+                </div>
+
+                <!-- Personal details -->
+                <div class="profile-section">
+                    <p class="profile-section-title">Personal Details</p>
+                    <div class="profile-fields">
+                        <div class="profile-field-row">
+                            <span class="profile-field-label">Full Name</span>
+                            <span class="profile-field-value" id="field-name">—</span>
+                        </div>
+                        <div class="profile-field-row">
+                            <span class="profile-field-label">Email</span>
+                            <span class="profile-field-value" id="field-email">—</span>
+                        </div>
+                        <div class="profile-field-row">
+                            <span class="profile-field-label">CNIC</span>
+                            <span class="profile-field-value" id="field-cnic">—</span>
+                        </div>
+                        <div class="profile-field-row">
+                            <span class="profile-field-label">Member Since</span>
+                            <span class="profile-field-value" id="field-since">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account details -->
+                <div class="profile-section">
+                    <p class="profile-section-title">Account Details</p>
+                    <div class="profile-fields">
+                        <div class="profile-field-row">
+                            <span class="profile-field-label">Account Number</span>
+                            <span class="profile-field-value" id="field-account">—</span>
+                        </div>
+                        <div class="profile-field-row">
+                            <span class="profile-field-label">Account Type</span>
+                            <span class="profile-field-value" id="field-type">—</span>
+                        </div>
+                        <div class="profile-field-row">
+                            <span class="profile-field-label">Available Balance</span>
+                            <span class="profile-field-value balance-val" id="field-balance">—</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const user = await apiGetProfile();
+            if (!user || !user.name) return;
+
+            // Avatar initials
+            const initials = user.name.trim().split(' ')
+                .map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            document.getElementById('avatar').textContent = initials;
+
+            // Hero
+            document.getElementById('profile-name').textContent = user.name;
+            const typeLabel = user.account_type
+                ? user.account_type.charAt(0).toUpperCase() + user.account_type.slice(1) + ' Account'
+                : 'Account';
+            document.getElementById('account-type-badge').textContent = typeLabel;
+
+            // Personal details
+            document.getElementById('field-name').textContent  = user.name           || '—';
+            document.getElementById('field-email').textContent = user.email          || '—';
+            document.getElementById('field-cnic').textContent  = user.cnic           || '—';
+            document.getElementById('field-since').textContent = user.created_at
+                ? user.created_at.split(' ')[0] : '—';
+
+            // Account details
+            document.getElementById('field-account').textContent = user.account_number || '—';
+            document.getElementById('field-type').textContent    = typeLabel;
+            document.getElementById('field-balance').textContent = 'PKR ' + Number(user.balance).toLocaleString();
+
+        } catch (e) {
+            console.error("Failed to load profile", e);
+        }
+    });
+</script>
+
+</html>

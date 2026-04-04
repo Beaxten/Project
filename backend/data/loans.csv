@@ -1,1 +1,2 @@
 loan_id,user_id,amount,purpose,duration_months,has_collateral,asset_description,status,applied_at,approved_at,ml_score
+1,18,50000.0,education,24,True,house,approved,2026-04-04 14:17:16.267934,,1.0

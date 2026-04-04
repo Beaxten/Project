@@ -4,9 +4,6 @@ from rest_framework import status
 from smartbank.authentication import CSVTokenAuthentication
 
 
-# ─────────────────────────────────────────
-#  GET /api/account/balance/
-# ─────────────────────────────────────────
 class BalanceView(APIView):
     authentication_classes = [CSVTokenAuthentication]
 
@@ -20,16 +17,13 @@ class BalanceView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-# ─────────────────────────────────────────
-#  GET /api/account/profile/
-# ─────────────────────────────────────────
+
 class ProfileView(APIView):
     authentication_classes = [CSVTokenAuthentication]
 
     def get(self, request):
-        user = request.user  # dict from CSV
+        user = request.user 
 
-        # Return everything EXCEPT password_hash
         return Response({
             'user_id':        user['user_id'],
             'name':           user['name'],

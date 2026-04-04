@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBank - Dashboard</title>
+    <link rel="stylesheet" href="Dashboard.css">
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <ul class="ul-sidebar">
+            <li class="li"><a href="Dashboard.html" class="active">Dashboard</a></li>
+            <li class="li"><a href="Transfer.html">Transfer</a></li>
+            <li class="li"><a href="statement.html">Statement</a></li>
+            <li class="li"><a href="loanApply.html">Loan</a></li>
+            <li class="li"><a href="profile.html">Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+
+        <header class="top-nav">
+            <div class="logo">SmartBank</div>
+            <div class="user-info">
+                <span>Hello, <span class="display-user-name"></span></span>
+                <a href="#" class="logout-btn">Logout</a>
+            </div>
+        </header>
+
+        <main class="content">
+
+            <div class="balance-card">
+                <p class="label">Account Number</p>
+                <h3 class="acc-number">—</h3>
+                <p class="label" style="margin-top: 15px;">Available Balance</p>
+                <h1 class="balance">PKR —</h1>
+                <p class="user-name">—</p>
+            </div>
+
+            <div class="section-header">
+                <h3>Recent Transactions</h3>
+                <button class="add-btn">+ Transfer</button>
+            </div>
+
+            <table class="transaction-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="4" style="text-align:center">Loading...</td></tr>
+                </tbody>
+            </table>
+
+        </main>
+    </div>
+
+</body>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const balanceData = await apiGetBalance();
+            document.querySelector(".acc-number").textContent  = balanceData.account_number || '—';
+            document.querySelector(".balance").textContent     = "PKR " + Number(balanceData.balance).toLocaleString();
+            document.querySelector(".user-name").textContent   = balanceData.name || '—';
+        } catch (e) {
+            console.error("Failed to load balance", e);
+        }
+
+        try {
+            const historyData = await apiGetHistory();
+            const tbody = document.querySelector(".transaction-table tbody");
+            tbody.innerHTML = "";
+
+            if (historyData && historyData.length > 0) {
+                historyData.slice(0, 5).forEach(txn => {
+                    const isCredit   = txn.type === 'credit';
+                    const amountSign = isCredit ? '+' : '-';
+                    const color      = isCredit ? '#16a34a' : '#dc2626';
+                    const tr         = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${txn.date}</td>
+                        <td>${txn.description}</td>
+                        <td style="color:${color};font-weight:500">${amountSign}${Number(txn.amount).toLocaleString()}</td>
+                        <td><span class="badge ${txn.type}">${txn.type.toUpperCase()}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                tbody.innerHTML = "<tr><td colspan='4' style='text-align:center'>No recent transactions</td></tr>";
+            }
+        } catch (e) {
+            console.error("Failed to load history", e);
+            document.querySelector(".transaction-table tbody").innerHTML =
+                "<tr><td colspan='4' style='text-align:center'>Failed to load transactions</td></tr>";
+        }
+
+        document.querySelector(".add-btn").addEventListener("click", () => {
+            window.location.href = "Transfer.html";
+        });
+    });
+</script>
+
+</html>

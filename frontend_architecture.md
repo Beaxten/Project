@@ -1,6 +1,7 @@
 # Frontend Architecture — SmartBank System
 
 ## Tech Stack
+
 - **Framework**: React 18 + Vite
 - **Styling**: Tailwind CSS
 - **Routing**: React Router v6
@@ -60,73 +61,44 @@ frontend/
 
 ## Routing Map
 
-| Route | Page | Access |
-|-------|------|--------|
-| `/` | Login | Public |
-| `/register` | Register | Public |
-| `/dashboard` | User Dashboard | User only |
-| `/transfer` | Transfer Money | User only |
-| `/statement` | Bank Statement | User only |
-| `/loan` | Apply for Loan | User only |
-| `/profile` | User Profile | User only |
-| `/admin` | Admin Dashboard | Admin only |
-| `/admin/users` | Manage Users | Admin only |
-| `/admin/loans` | Loan Approvals | Admin only |
-| `/admin/fraud` | Fraud Alerts | Admin only |
+| Route                 | Page             | Access     |
+| --------------------- | ---------------- | ---------- |
+| `/`                   | Login            | Public     |
+| `/register`           | Register         | Public     |
+| `/dashboard`          | User Dashboard   | User only  |
+| `/transfer`           | Transfer Money   | User only  |
+| `/statement`          | Bank Statement   | User only  |
+| `/loan`               | Apply for Loan   | User only  |
+| `/profile`            | User Profile     | User only  |
+| `/admin`              | Admin Dashboard  | Admin only |
+| `/admin/users`        | Manage Users     | Admin only |
+| `/admin/loans`        | Loan Approvals   | Admin only |
+| `/admin/fraud`        | Fraud Alerts     | Admin only |
 | `/admin/transactions` | All Transactions | Admin only |
-
----
-
-## Auth Flow
-
-1. User logs in → Backend returns `{ token, role, user_id }`
-2. Token stored in `localStorage`
-3. `AuthContext` provides `{ user, token, login(), logout() }` globally
-4. `ProtectedRoute` component checks role before rendering
-
-```jsx
-// AuthContext.jsx usage
-const { user, login, logout } = useAuth();
-```
-
----
-
-## API Base Config
-
-```js
-// src/api/axiosConfig.js
-import axios from 'axios';
-const API = axios.create({ baseURL: 'http://localhost:8000/api' });
-API.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  if (token) config.headers.Authorization = `Token ${token}`;
-  return config;
-});
-export default API;
-```
 
 ---
 
 ## Backend API Endpoints (Frontend must call these)
 
-| Method | URL | Purpose |
-|--------|-----|---------|
-| POST | `/api/auth/login/` | Login |
-| POST | `/api/auth/register/` | Register |
-| GET | `/api/account/balance/` | Get balance |
-| POST | `/api/transactions/transfer/` | Transfer money |
-| GET | `/api/transactions/history/` | Statement |
-| POST | `/api/loans/apply/` | Apply for loan |
-| GET | `/api/loans/status/` | Loan status |
-| GET | `/api/admin/users/` | All users (admin) |
-| PUT | `/api/admin/loans/{id}/approve/` | Approve loan (admin) |
-| GET | `/api/admin/fraud-alerts/` | Fraud alerts (admin) |
+| Method | URL                              | Purpose              |
+| ------ | -------------------------------- | -------------------- |
+| POST   | `/api/auth/login/`               | Login                |
+| POST   | `/api/auth/register/`            | Register             |
+| GET    | `/api/account/balance/`          | Get balance          |
+| POST   | `/api/transactions/transfer/`    | Transfer money       |
+| GET    | `/api/transactions/history/`     | Statement            |
+| POST   | `/api/loans/apply/`              | Apply for loan       |
+| GET    | `/api/loans/status/`             | Loan status          |
+| GET    | `/api/admin/users/`              | All users (admin)    |
+| PUT    | `/api/admin/loans/{id}/approve/` | Approve loan (admin) |
+| GET    | `/api/admin/fraud-alerts/`       | Fraud alerts (admin) |
 
 ---
 
 ## Component Responsibilities
 
 ### Shared Components
+
 - `Navbar` — top navigation, shows user name + logout
 - `Sidebar` — left nav links (different for user vs admin)
 - `ProtectedRoute` — redirects if not authenticated or wrong role

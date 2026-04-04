@@ -1,0 +1,188 @@
+/* * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+
+.nav {
+  position: absolute;
+  top: 30px;
+  left: 300px;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 50px;
+  list-style: none;
+
+}
+
+.li a {
+  font-size: 24px;
+  font-weight: bolder;
+  color: white;
+  text-decoration: none;
+}
+
+.li a:hover {
+  color: yellow;
+} */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    /* Aapki original Gray/Navy Theme */
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    display: flex;
+    height: 100vh;
+    color: white;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 200px;
+    padding-top: 100px;
+    padding-left: 20px;
+}
+
+.ul-sidebar {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.li a {
+    font-size: 20px;
+    font-weight: bolder;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.li a:hover, .li a.active {
+    color: #ffd700; /* Yellow hover as per your code */
+}
+
+/* Main Layout Container */
+.main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-right: 40px;
+}
+
+/* Top Navbar (Blue Bar from Image) */
+.top-nav {
+    background-color: #2557d6;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 30px;
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.logout-btn {
+    text-decoration: none;
+    color: white;
+    border: 1px solid white;
+    padding: 4px 12px;
+    border-radius: 5px;
+    margin-left: 15px;
+    font-size: 14px;
+}
+
+/* Content Area */
+.content {
+    margin-top: 20px;
+}
+
+/* Blue Balance Card from Image */
+.balance-card {
+    background-color: #2557d6;
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.label { font-size: 13px; opacity: 0.9; }
+.acc-number { font-size: 18px; margin-bottom: 10px; }
+.balance { font-size: 34px; margin: 5px 0; }
+
+/* Section Header */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-btn {
+    background-color: #2557d6;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Table Styling (Transparent background to show your theme) */
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.transaction-table th {
+    text-align: left;
+    padding: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: #ccc;
+}
+
+.transaction-table td {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Badges */
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.debit { background-color: #ff4d4d22; color: #ff4d4d; border: 1px solid #ff4d4d; }
+.credit { background-color: #2ecc7122; color: #2ecc71; border: 1px solid #2ecc71; }
